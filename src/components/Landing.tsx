@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useFetch } from "../Hooks/useFetch";
+
 import { makeStyles } from "@mui/styles";
-import axios from "axios";
-import { Typography, Box } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import { Typography, Box, Button } from "@mui/material";
 
 const useStyles = makeStyles({
   root: {
@@ -14,50 +17,58 @@ const useStyles = makeStyles({
     padding: "0 30px",
   },
 });
-
+("https://randomuser.me/api");
 export default function Landing() {
-  const [info, setInfo] = useState<any>(null);
-  useEffect(() => {
-    const fetch = async () => {
-      const response = await axios.get("https://randomuser.me/api");
-      setInfo(response.data);
-      console.log(info);
-    };
+  const { data, loading, error } = useFetch("https://randomuser.me/api/");
 
-    fetch();
-  }, []);
   function refreshPage() {
     window.location.reload();
 
     // window.location.reload();
   }
-  const classes = useStyles();
-  return (
-    <Box>
-      <img
-        src={info?.results[0].picture.large}
-        alt=""
-        width="386"
-        height="386"
-      />
-      <Typography>codename:{info?.results[0].login.username}</Typography>
 
-      <Typography>first name: {info?.results[0].name.first}</Typography>
-      <Typography>Last name: {info?.results[0].name.last}</Typography>
-      <Typography>City: {info?.results[0].location.city}</Typography>
-      <Typography>State: {info?.results[0].location.state}</Typography>
-      <Typography>Country: {info?.results[0].location.country}</Typography>
-      <Typography>Gender: {info?.results[0].gender}</Typography>
-      <Typography>DOB: {info?.results[0].dob.date}</Typography>
-      <Typography>Eye Color: </Typography>
-      <Typography>
-        Time Zone Offset: {info?.results[0].location.timezone.offset}
-      </Typography>
-      <Typography>
-        time zone description : {info?.results[0].location.timezone.description}
-      </Typography>
+  // function getAge(dateString) {
+  //   const age = new Date(dateString);
+  //   return age;
+  // }
 
-      <button onClick={refreshPage}>Click to reload!</button>
-    </Box>
-  );
+  // const birthDate = getAge(results[0].dob.date);
+
+  // const classes = useStyles();
+  if (error) {
+    <div>{error}</div>;
+  }
+  if (data && !loading) {
+    console.log(data);
+    return (
+      <Box>
+        <img src={data.picture.large} alt="" width="386" height="386" />
+        <Typography>codename:{data?.login.username}</Typography>
+
+        <Typography>first name: {data?.name.first}</Typography>
+        <Typography>Last name: {data?.name.last}</Typography>
+        <Typography>City: {data?.location.city}</Typography>
+        <Typography>State: {data?.location.state}</Typography>
+        <Typography>Country: {data?.location.country}</Typography>
+        <Typography>Gender: {data.gender}</Typography>
+        {/* <Typography>DOB: {birthDate}</Typography> */}
+        <Typography>Eye Color: </Typography>
+        <Typography>
+          Time Zone Offset: {data.location.timezone.offset}
+        </Typography>
+        <Typography>
+          Time Zone Description : {data.location.timezone.description}
+        </Typography>
+
+        <Button onClick={refreshPage} variant="contained">
+          Next
+        </Button>
+      </Box>
+    );
+  } else
+    return (
+      <Box sx={{ display: "flex" }}>
+        <CircularProgress />
+      </Box>
+    );
 }
