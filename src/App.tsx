@@ -1,12 +1,11 @@
 import "./styles.css";
-
+import React from "react";
+import Button from "@mui/material/Button";
+import Landing from "./components/Landing";
 export default function App() {
   return (
     <div className="App">
-      <h1>HelloCodeSandbox</h1>
-      <h2>Start editing to see some magic happen!!!!</h2>
+      <Landing />
     </div>
   );
 }
-
-
